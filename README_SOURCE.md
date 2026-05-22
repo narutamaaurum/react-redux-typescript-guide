@@ -657,13 +657,20 @@ state.containerObject.numbers.push(1); // TS Error: cannot use mutator methods
 ::codeblock='playground/src/features/todos/selectors.ts'::
 
 ```tsx
+import Types from 'MyTypes';
+import * as React from 'react';
+
 import { countersSelectors } from '../features/counters';
 import { useSelector } from '../store/hooks';
 
-const selectReduxCounter = (state: RootState) =>
+const selectReduxCounter = (state: Types.RootState) =>
   countersSelectors.getReduxCounter(state.counters);
 
-const counter = useSelector(selectReduxCounter);
+const CounterValue: React.FC = () => {
+  const counter = useSelector(selectReduxCounter);
+
+  return <span>{counter}</span>;
+};
 ```
 
 The selector still belongs to the feature module, but the adapter function lives at
