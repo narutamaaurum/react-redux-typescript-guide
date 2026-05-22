@@ -1841,9 +1841,12 @@ export const useDispatch: () => Dispatch<RootAction> = useGenericDispatch;
 ### Types global namespace
 
 The `MyTypes` module is a shared namespace that lets each feature own its local
-types while still contributing to a central app-level contract.
+types while still contributing to a central app-level contract. It builds on the
+`RootState` and `RootAction` setup from the [Create Global Store
+Types](#create-global-store-types) section above.
 
-- `playground/typings/modules.d.ts` declares the ambient module name.
+- `playground/typings/modules.d.ts` provides the empty ambient module that later
+  files augment.
 - `playground/src/store/types.d.ts` augments it with `Store`, `RootAction`, and
   `RootState`.
 - `playground/src/services/types.d.ts` augments the same module with `Services`.
@@ -2139,7 +2142,7 @@ if you cannot find types for a third-party module you can provide your own types
 
 ```tsx
 // typings/modules.d.ts
-declare module 'MyTypes';
+declare module 'MyTypes' {}
 declare module 'react-test-renderer';
 declare module '@storybook/addon-storyshots'
 
