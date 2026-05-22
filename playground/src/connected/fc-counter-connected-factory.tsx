@@ -16,16 +16,12 @@ const makeMapStateToProps: MapStateToPropsFactory<
   StateProps,
   OwnProps,
   Types.RootState
-> = () => {
-  let offset = 0;
+> = (_, initialOwnProps) => {
+  const offset = initialOwnProps.initialCount || 0;
 
-  return (state, ownProps) => {
-    offset = ownProps.initialCount || 0;
-
-    return {
-      count: countersSelectors.getReduxCounter(state.counters) + offset,
-    };
-  };
+  return state => ({
+    count: countersSelectors.getReduxCounter(state.counters) + offset,
+  });
 };
 
 const dispatchProps = {
