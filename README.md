@@ -135,6 +135,7 @@ I highly recommend to add a bounty to the issue that you're waiting for to incre
   - [Connect with `react-redux`](#connect-with-react-redux)
     - [Typing connected component](#typing-connected-component)
     - [Typing `useSelector` and `useDispatch`](#typing-useselector-and-usedispatch)
+    - [Types global namespace](#types-global-namespace)
     - [Typing connected component with `redux-thunk` integration](#typing-connected-component-with-redux-thunk-integration)
 - [Configuration & Dev Tools](#configuration--dev-tools)
   - [Common Npm Scripts](#common-npm-scripts)
@@ -1834,6 +1835,53 @@ export const useSelector: TypedUseSelectorHook<RootState> = useGenericSelector;
 export const useDispatch: () => Dispatch<RootAction> = useGenericDispatch;
 
 ```
+
+[⇧ back to top](#table-of-contents)
+
+### Types global namespace
+
+The `MyTypes` module is a shared namespace that lets each feature own its local
+types while still contributing to a central app-level contract.
+
+- `playground/typings/modules.d.ts` declares the ambient module name.
+- `playground/src/store/types.d.ts` augments it with `Store`, `RootAction`, and
+  `RootState`.
+- `playground/src/services/types.d.ts` augments the same module with `Services`.
+
+Because each module augments `MyTypes` independently, types stay close to the
+code that owns them instead of being collected in one giant file.
+
+```tsx
+import { StateType, ActionType } from 'typesafe-actions';
+
+declare module 'MyTypes' {
+  export type Store = StateType<typeof import('./store').default>;
+  export type RootAction = ActionType<typeof import('./root-action').default>;
+  export type RootState = StateType<ReturnType<typeof import('./root-reducer').default>>;
+}
+
+declare module 'typesafe-actions' {
+  interface Types {
+    RootAction: ActionType<typeof import('./root-action').default>;
+  }
+}
+
+```
+
+```tsx
+declare module 'MyTypes' {
+  export type Services = typeof import('./index').default;
+}
+
+```
+
+```ts
+import { RootState, RootAction, Services } from 'MyTypes';
+```
+
+This pattern keeps imports stable and makes cross-cutting app types reusable in
+selectors, store hooks, middleware, and connected components without duplicating
+definitions.
 
 [⇧ back to top](#table-of-contents)
 
