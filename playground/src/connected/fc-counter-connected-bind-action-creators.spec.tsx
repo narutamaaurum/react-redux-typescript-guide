@@ -1,14 +1,14 @@
 import React from 'react';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { AnyAction, applyMiddleware, combineReducers, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
 import { FCCounterConnectedBindActionCreators as ConnectedCounter } from './fc-counter-connected-bind-action-creators';
 
 const reducer = combineReducers({
   counters: combineReducers({
-    reduxCounter: (state: number = 0, action: any) => {
+    reduxCounter: (state: number = 0, action: AnyAction) => {
       switch (action.type) {
         case 'counters/INCREMENT':
           return state + 1;
@@ -22,7 +22,6 @@ const reducer = combineReducers({
 
 afterEach(() => {
   jest.useRealTimers();
-  cleanup();
 });
 
 test('can dispatch the delayed increment thunk', async () => {
@@ -31,14 +30,14 @@ test('can dispatch the delayed increment thunk', async () => {
   const label = 'Counter 1';
   renderWithRedux(<ConnectedCounter label={label} />);
 
+  expect(screen.getByText(`${label}: 0`)).toBeTruthy();
   fireEvent.click(screen.getByText('Increment'));
-  expect(screen.getByText(RegExp(label)).textContent).toBe(label + ': 0');
 
   await act(async () => {
     jest.advanceTimersByTime(1000);
   });
 
-  expect(screen.getByText(RegExp(label)).textContent).toBe(label + ': 1');
+  expect(screen.getByText(`${label}: 1`)).toBeTruthy();
 });
 
 function renderWithRedux(
