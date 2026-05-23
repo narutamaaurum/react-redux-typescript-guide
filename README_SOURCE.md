@@ -674,9 +674,9 @@ import { connect } from 'react-redux';
 import { countersActions } from '../features/counters';
 import { FCCounter } from '../components';
 
-// Type annotation for "state" argument is mandatory to check 
-// the correct shape of state object and injected props you can also
-// extend connected component Props interface by annotating `ownProps` argument
+// Annotating the `state` argument checks the root-state shape.
+// You can also extend the connected component props interface by
+// annotating the `ownProps` argument.
 const mapStateToProps = (state: MyTypes.RootState, ownProps: FCCounterProps) => ({
   count: state.counters.reduxCounter,
 });
@@ -688,10 +688,10 @@ const dispatchProps = {
   onIncrement: countersActions.increment,
 };
 
-// Notice we don't need to pass any generic type parameters to neither
-// the connect function below nor map functions declared above
-// because type inference will infer types from arguments annotations automatically
-// This is much cleaner and idiomatic approach
+// Notice that we do not need to pass explicit generic parameters to
+// `connect` or to the mapping functions declared above.
+// Type inference derives them automatically from the annotated inputs,
+// which keeps the example cleaner and more idiomatic.
 export const FCCounterConnected =
   connect(mapStateToProps, dispatchProps)(FCCounter);
 
